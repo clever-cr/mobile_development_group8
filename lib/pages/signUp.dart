@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namer_app/components/button.dart';
 
 class SignUp extends StatelessWidget {
   const SignUp({super.key});
@@ -8,11 +9,11 @@ class SignUp extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Signup")),
       body: Center(
-          child: ElevatedButton(
+          child: Button(
+        buttonText: 'SignUp',
         onPressed: () {
           Navigator.pushNamed(context, '/');
         },
-        child: const Text('SignUp'),
       )),
     );
   }
