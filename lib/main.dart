@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'pages/login.dart';
+import 'pages/quiz.dart';
+import 'pages/categories.dart';
+import 'pages/question.dart';
+import 'pages/results.dart';
+import 'pages/signUp.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,14 +15,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text(
-            'Hello World!',
-          ),
-        ),
-      ),
+    return MaterialApp(
+      home: Login(),
+      routes: {
+        '/quiz': (context) => Quiz(),
+        '/categories': (context) => Category(),
+        '/questions': (context) => Question(),
+        '/results': (context) => Result(),
+        '/signUp': (context) => SignUp()
+      },
     );
   }
 }
