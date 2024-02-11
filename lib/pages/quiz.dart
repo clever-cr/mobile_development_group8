@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namer_app/components/button.dart';
 
 class Quiz extends StatelessWidget {
   const Quiz({super.key});
@@ -8,11 +9,11 @@ class Quiz extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Quiz")),
       body: Center(
-          child: ElevatedButton(
+          child: Button(
+        buttonText: 'start quiz',
         onPressed: () {
           Navigator.pushNamed(context, '/categories');
         },
-        child: const Text('start quiz'),
       )),
     );
   }

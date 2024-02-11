@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namer_app/components/button.dart';
 
 class Question extends StatelessWidget {
   const Question({super.key});
@@ -8,11 +9,11 @@ class Question extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Questions")),
       body: Center(
-          child: ElevatedButton(
+          child: Button(
+        buttonText: 'Submit',
         onPressed: () {
           Navigator.pushNamed(context, '/results');
         },
-        child: const Text('submit'),
       )),
     );
   }
