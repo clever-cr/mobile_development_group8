@@ -4,7 +4,7 @@ import 'pages/quiz.dart';
 import 'pages/categories.dart';
 import 'pages/question.dart';
 import 'pages/results.dart';
-import 'pages/signUp.dart';
+import 'pages/sign_up.dart';
 
 void main() {
   runApp(const MainApp());
