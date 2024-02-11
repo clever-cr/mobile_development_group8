@@ -51,12 +51,25 @@ class CategoryButton extends StatelessWidget {
         color: Colors.black,
         borderRadius: BorderRadius.circular(8.0),
       ),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: Text(
-          categoryName,
-          style: TextStyle(
-            color: Colors.white,
+      child: Material(
+        type: MaterialType.transparency,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.all(16.0),
+            elevation: 0,
+            shadowColor: Colors.transparent,
+          ),
+          child: Text(
+            categoryName,
+            style: TextStyle(
+                // color: Colors.white, // Uncomment if you want to specify the text color
+                ),
           ),
         ),
       ),
