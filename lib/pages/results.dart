@@ -12,7 +12,7 @@ class Result extends StatelessWidget {
           child: Button(
         buttonText: 'categories',
         onPressed: () {
-          Navigator.pushNamed(context, '/categories');
+          Navigator.pushNamed(context, '/quiz');
         },
       )),
     );
