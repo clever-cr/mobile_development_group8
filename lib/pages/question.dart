@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:namer_app/components/button.dart';
+import 'package:sharp_mind/components/button.dart';
 
 class Question extends StatelessWidget {
   const Question({super.key});
