@@ -9,11 +9,34 @@ class Question extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Questions")),
       body: Center(
-          child: Button(
-        buttonText: 'Submit',
-        onPressed: () {
-          Navigator.pushNamed(context, '/results');
-        },
+          child: Column(
+        children: [
+          Text("What is a controller in Next js"),
+          Button(
+            buttonText: 'A steel wheel',
+            onPressed: () {
+              Navigator.pushNamed(context, '/results');
+            },
+          ),
+          Button(
+            buttonText: 'A Ballon',
+            onPressed: () {
+              Navigator.pushNamed(context, '/results');
+            },
+          ),
+          Button(
+            buttonText: 'An adapter to the business logic',
+            onPressed: () {
+              Navigator.pushNamed(context, '/results');
+            },
+          ),
+          Button(
+            buttonText: 'None of the above',
+            onPressed: () {
+              Navigator.pushNamed(context, '/results');
+            },
+          ),
+        ],
       )),
     );
   }

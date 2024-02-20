@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class Category extends StatelessWidget {
   final List<String> categories = [
-    'Category 1',
-    'Category 2',
-    'Category 3',
-    'Category 4',
-    'Category 5',
-    'Category 6',
+    'Flutter',
+    'Css',
+    'Html',
+    'Node js',
+    'Python',
+    'Javascript',
   ];
 
   @override
