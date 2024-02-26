@@ -1,0 +1,29 @@
+{
+    "project_info": {
+      "project_number": "32243906607",
+      "project_id": "sharp-mind-5cc89",
+      "storage_bucket": "sharp-mind-5cc89.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:32243906607:android:0f75ad5dffc42ed0de2eda",
+          "android_client_info": {
+            "package_name": "com.example.mobile_development_group8"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyBiR2GgqS4VW6xIsPqT3UXD1M56wQMWz7o"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }
