@@ -1,31 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Category extends StatelessWidget {
-  final List<String> categories = [
-    'Flutter',
-    'Css',
-    'Html',
-    'Node js',
-    'Python',
-    'Javascript',
-  ];
+class Category extends StatefulWidget {
+  @override
+  // ignore: library_private_types_in_public_api
+  _CategoryState createState() => _CategoryState();
+}
+
+class _CategoryState extends State<Category> {
+  late CollectionReference<Map<String, dynamic>> collection;
+
+  @override
+  void initState() {
+    super.initState();
+    collection = FirebaseFirestore.instance.collection('Categories');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Categories")),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 8.0,
-          mainAxisSpacing: 8.0,
-        ),
-        itemCount: categories.length,
-        itemBuilder: (BuildContext context, int index) {
-          return CategoryButton(
-            categoryName: categories[index],
-            onPressed: () {
-              Navigator.pushNamed(context, '/questions');
+      body: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        future: collection.get(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(); // Loading indicator while waiting for data
+          }
+
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          // Process the documents from the snapshot
+          List<String> categories =
+              snapshot.data?.docs.map((doc) => doc.id).toList() ?? [];
+
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+            ),
+            itemCount: categories.length,
+            itemBuilder: (BuildContext context, int index) {
+              return CategoryButton(
+                categoryName: categories[index],
+                onPressed: () {
+                  Navigator.pushNamed(context, '/questions');
+                },
+              );
             },
           );
         },
@@ -67,9 +91,7 @@ class CategoryButton extends StatelessWidget {
           ),
           child: Text(
             categoryName,
-            style: TextStyle(
-                // color: Colors.white, // Uncomment if you want to specify the text color
-                ),
+            style: TextStyle(),
           ),
         ),
       ),
