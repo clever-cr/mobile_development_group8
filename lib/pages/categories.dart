@@ -5,7 +5,7 @@ class Category extends StatefulWidget {
   @override
   _CategoryState createState() => _CategoryState();
 }
-
+print("categories");
 class _CategoryState extends State<Category> {
   late CollectionReference<Map<String, dynamic>> collection;
 
