@@ -1,31 +1,123 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Category extends StatelessWidget {
-  final List<String> categories = [
-    'Flutter',
-    'Css',
-    'Html',
-    'Node js',
-    'Python',
-    'Javascript',
-  ];
+class Category extends StatefulWidget {
+  @override
+  _CategoryState createState() => _CategoryState();
+}
+
+class _CategoryState extends State<Category> {
+  late CollectionReference<Map<String, dynamic>> collection;
+
+  @override
+  void initState() {
+    super.initState();
+    collection = FirebaseFirestore.instance.collection('Categories');
+  }
+
+  Future<void> updateCategory(BuildContext context, String categoryId,
+      String currentCategoryName) async {
+    TextEditingController controller =
+        TextEditingController(text: currentCategoryName);
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Update Category"),
+          content: TextField(controller: controller),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (controller.text.isNotEmpty) {
+                  // Update the category in Firestore
+                  await FirebaseFirestore.instance
+                      .collection('Categories')
+                      .doc(categoryId)
+                      .update({
+                    'categoryName': controller.text,
+                  });
+
+                  Navigator.pop(context);
+                } else {
+                  // Show an error message or handle empty field case
+                }
+              },
+              child: Text("Update"),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Delete the category from Firestore
+                await FirebaseFirestore.instance
+                    .collection('Categories')
+                    .doc(categoryId)
+                    .delete();
+
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Delete",
+                style: TextStyle(color: Colors.red),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Categories")),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 8.0,
-          mainAxisSpacing: 8.0,
-        ),
-        itemCount: categories.length,
-        itemBuilder: (BuildContext context, int index) {
-          return CategoryButton(
-            categoryName: categories[index],
-            onPressed: () {
-              Navigator.pushNamed(context, '/questions');
+      body: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        future: FirebaseFirestore.instance.collection('Categories').get(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          List<Map<String, dynamic>> categoriesData = snapshot.data!.docs
+              .map((DocumentSnapshot document) =>
+                  document.data() as Map<String, dynamic>)
+              .toList();
+          List<String> categories = categoriesData
+              .map((category) => category['categoryName'].toString())
+              .toList();
+
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+            ),
+            itemCount: categories.length,
+            itemBuilder: (BuildContext context, int index) {
+              String categoryId = snapshot.data!.docs[index].id;
+              String categoryName =
+                  categoriesData[index]['categoryName'].toString();
+              return CategoryButton(
+                categoryName: categoryName,
+                onPressed: () {
+                  Navigator.pushNamed(context, '/questions',
+                      arguments: categories[index]);
+                },
+                onLongPressed: () {
+                  // Long press to update the category
+                  updateCategory(context, categoryId, categoryName);
+                },
+              );
             },
           );
         },
@@ -37,11 +129,13 @@ class Category extends StatelessWidget {
 class CategoryButton extends StatelessWidget {
   final String categoryName;
   final VoidCallback onPressed;
+  final VoidCallback onLongPressed;
 
   const CategoryButton({
     Key? key,
     required this.categoryName,
     required this.onPressed,
+    required this.onLongPressed,
   }) : super(key: key);
 
   @override
@@ -58,6 +152,7 @@ class CategoryButton extends StatelessWidget {
         ),
         child: ElevatedButton(
           onPressed: onPressed,
+          onLongPress: onLongPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
@@ -67,9 +162,7 @@ class CategoryButton extends StatelessWidget {
           ),
           child: Text(
             categoryName,
-            style: TextStyle(
-                // color: Colors.white, // Uncomment if you want to specify the text color
-                ),
+            style: TextStyle(),
           ),
         ),
       ),
