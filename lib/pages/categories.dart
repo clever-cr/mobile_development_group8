@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Category extends StatefulWidget {
   @override
-  // ignore: library_private_types_in_public_api
   _CategoryState createState() => _CategoryState();
 }
 
@@ -25,16 +24,25 @@ class _CategoryState extends State<Category> {
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); // Loading indicator while waiting for data
+            return CircularProgressIndicator();
           }
 
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
+          List<Map<String, dynamic>> categoriesData = snapshot.data!.docs
+              .map((DocumentSnapshot document) =>
+                  document.data() as Map<String, dynamic>)
+              .toList();
+          print(snapshot.data!.docs.map((doc) => doc.data()));
 
-          // Process the documents from the snapshot
-          List<String> categories =
-              snapshot.data?.docs.map((doc) => doc.id).toList() ?? [];
+          categoriesData.forEach((category) {
+            print(
+                'category: $category, categoryName: ${category['categoryName']}');
+          });
+          List<String> categories = categoriesData
+              .map((category) => category['categoryName'].toString())
+              .toList();
 
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -43,11 +51,20 @@ class _CategoryState extends State<Category> {
               mainAxisSpacing: 8.0,
             ),
             itemCount: categories.length,
-            itemBuilder: (BuildContext context, int index) {
+            itemBuilder: (
+              BuildContext context,
+              int index,
+            ) {
+              String categoryName = categoriesData
+                  .where((category) => category != null)
+                  .toList()[index]['categoryName']
+                  .toString();
+
               return CategoryButton(
-                categoryName: categories[index],
+                categoryName: categoryName,
                 onPressed: () {
-                  Navigator.pushNamed(context, '/questions');
+                  Navigator.pushNamed(context, '/questions',
+                      arguments: categories[index]);
                 },
               );
             },
