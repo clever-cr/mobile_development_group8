@@ -59,7 +59,7 @@ class _CategoryState extends State<Category> {
                   .where((category) => category != null)
                   .toList()[index]['categoryName']
                   .toString();
-
+              print(categoryName);
               return CategoryButton(
                 categoryName: categoryName,
                 onPressed: () {
