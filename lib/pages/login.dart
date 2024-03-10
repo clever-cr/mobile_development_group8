@@ -22,7 +22,7 @@ class Login extends StatelessWidget {
       final UserCredential userCredential =
           await auth.signInWithCredential(credential);
       print(userCredential.user!.displayName);
-      return null;
+      return;
     } catch (error) {
       // Print errors during Google Sign-in
       print('Error during Google Sign-in: $error');
@@ -56,7 +56,7 @@ class Login extends StatelessWidget {
               },
             ),
             Text('or continue with'),
-            Container(
+            SizedBox(
               width: 200,
               height: 60,
               child: Row(
