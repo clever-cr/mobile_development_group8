@@ -29,8 +29,26 @@ class Login extends StatelessWidget {
     }
   }
 
+  Future<void> signinWithEmailAndPassowrd(String email, String password) async {
+    try {
+      final user = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      print("user is from password $user");
+      return;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    TextEditingController usernameController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(title: Text("Login")),
       body: Center(
@@ -39,20 +57,27 @@ class Login extends StatelessWidget {
           children: [
             Field(
               hintText: 'Username',
-              controller: TextEditingController(),
+              controller: usernameController,
               decoration: InputDecoration(),
             ),
             SizedBox(height: 20),
             Field(
               hintText: 'Password',
-              controller: TextEditingController(),
+              controller: passwordController,
               decoration: InputDecoration(),
             ),
             SizedBox(height: 20),
             Button(
               buttonText: 'Login',
-              onPressed: () {
-                Navigator.pushNamed(context, '/quiz');
+              onPressed: () async {
+                try {
+                  String username = usernameController.text;
+                  String password = passwordController.text;
+                  await signinWithEmailAndPassowrd(username, password);
+                  Navigator.pushNamed(context, '/quiz');
+                } catch (e) {
+                  print('Error while logging in $e');
+                }
               },
             ),
             Text('or continue with'),
@@ -64,9 +89,13 @@ class Login extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   GestureDetector(
-                    onTap: () {
-                      signInWithGoogle();
-                      Navigator.pushNamed(context, '/quiz');
+                    onTap: () async {
+                      try {
+                        await signInWithGoogle();
+                        Navigator.pushNamed(context, '/quiz');
+                      } catch (e) {
+                        print('Error while logging in $e');
+                      }
                     },
                     child: Container(
                       child: Image.network(
