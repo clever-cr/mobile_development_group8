@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sharp_mind/components/button.dart';
 
@@ -49,8 +50,13 @@ class TitleSection extends StatelessWidget {
                   children: [
                     Button(
                         buttonText: "Logout",
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/');
+                        onPressed: () async {
+                          try {
+                            await FirebaseAuth.instance.signOut();
+                            Navigator.pushNamed(context, '/');
+                          } catch (e) {
+                            print("Error while logging out $e");
+                          }
                         })
                   ],
                 )
@@ -64,15 +70,36 @@ class TitleSection extends StatelessWidget {
 }
 
 class TextSection extends StatelessWidget {
-  const TextSection({super.key});
+  const TextSection({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    var currentUser = FirebaseAuth.instance.currentUser!.email;
+    print("user------> $currentUser");
     return Container(
       padding: const EdgeInsets.all(32),
-      child: Text(
-        'Welcome to the quiz app. You can start the quiz by clicking the button below.',
-        softWrap: true,
-      ),
+      child: currentUser != null
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome user with email:, ${currentUser}!',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'You can start the quiz by clicking the button below.',
+                  softWrap: true,
+                ),
+              ],
+            )
+          : Text(
+              'Welcome to the quiz app. Please log in to start the quiz.',
+              softWrap: true,
+            ),
     );
   }
 }
