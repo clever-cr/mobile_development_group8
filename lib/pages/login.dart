@@ -7,7 +7,7 @@ import 'package:sharp_mind/components/text_field.dart';
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
 
-  Future<void> signInWithGoogle() async {
+  Future<bool> signInWithGoogle() async {
     try {
       FirebaseAuth auth = FirebaseAuth.instance;
       final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -22,25 +22,22 @@ class Login extends StatelessWidget {
       final UserCredential userCredential =
           await auth.signInWithCredential(credential);
       print(userCredential.user!.displayName);
-      return;
+      return true;
     } catch (error) {
       // Print errors during Google Sign-in
       print('Error during Google Sign-in: $error');
+      return false;
     }
   }
 
-  Future<void> signinWithEmailAndPassowrd(String email, String password) async {
+  Future<bool> signinWithEmailAndPassowrd(String email, String password) async {
     try {
       final user = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       print("user is from password $user");
-      return;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -48,13 +45,14 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController usernameController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
-
+    final String? error = ModalRoute.of(context)!.settings.arguments as String?;
     return Scaffold(
       appBar: AppBar(title: Text("Login")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            if (error != null) Text(error, style: TextStyle(color: Colors.red)),
             Field(
               hintText: 'Username',
               controller: usernameController,
@@ -70,14 +68,15 @@ class Login extends StatelessWidget {
             Button(
               buttonText: 'Login',
               onPressed: () async {
-                try {
-                  String username = usernameController.text;
-                  String password = passwordController.text;
-                  await signinWithEmailAndPassowrd(username, password);
-                  Navigator.pushNamed(context, '/quiz');
-                } catch (e) {
-                  print('Error while logging in $e');
-                }
+                String username = usernameController.text;
+                String password = passwordController.text;
+                final isAuth =
+                    await signinWithEmailAndPassowrd(username, password);
+                isAuth
+                    ? Navigator.pushNamed(context, '/quiz')
+                    : Navigator.pushNamed(context, '/',
+                        arguments:
+                            "Invalid email or password \n Please try again");
               },
             ),
             Text('or continue with'),
@@ -90,12 +89,12 @@ class Login extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () async {
-                      try {
-                        await signInWithGoogle();
-                        Navigator.pushNamed(context, '/quiz');
-                      } catch (e) {
-                        print('Error while logging in $e');
-                      }
+                      final isAuth = await signInWithGoogle();
+                      isAuth
+                          ? Navigator.pushNamed(context, '/quiz')
+                          : Navigator.pushNamed(context, '/',
+                              arguments:
+                                  "Invalid email or password \n Please try again");
                     },
                     child: Container(
                       child: Image.network(
