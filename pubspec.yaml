@@ -18,12 +18,15 @@ dependencies:
   cloud_firestore: ^4.15.5
   google_sign_in: ^6.1.5
   firebase_auth: ^4.12.1
+  firebase_auth_mocks: ^0.13.0
+  google_sign_in_mocks: ^0.3.0
 
 dev_dependencies:
-  flutter_test:
+  mockito: ^5.0.0
+  build_runner: ^2.1.2
+flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
