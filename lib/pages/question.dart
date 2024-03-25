@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:sharp_mind/components/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class Question extends StatelessWidget {
-  const Question({super.key});
+
+
+  const Question({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final selectedCategory =
-        ModalRoute.of(context)!.settings.arguments as String;
-
+    final selectedCategory = ModalRoute.of(context)!.settings.arguments;
+    print("..........");
+    print(selectedCategory);
     CollectionReference newQuestions =
         FirebaseFirestore.instance.collection('questions');
     Future<void> addQuestion() {
@@ -27,7 +32,7 @@ class Question extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("Questions for $selectedCategory")),
+      appBar: AppBar(title: Text("Questions for Python")),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
             .collection('questions')
