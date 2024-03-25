@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      json_serializable|jsonSerializableGenerator:
+        options:
+          - $lib$
+          - $test$
